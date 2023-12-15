@@ -1,6 +1,24 @@
 .loginPage{
   height: 100%;
   width: 100%;
-  background-color: white;
+  background-image: url("../../assets/bg.jpg");
+  background-size: 100% 100%;
   color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+.loginForm{
+  width: 600px;
+  height: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  //box-shadow: 0 0.3px 0.7px rgba(0, 0, 0, 0.126),
+  //0 0.9px 1.7px rgba(0, 0, 0, 0.179), 0 1.8px 3.5px rgba(0, 0, 0, 0.224),
+  //0 3.7px 7.3px rgba(0, 0, 0, 0.277), 0 10px 20px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(20px);
+  transition: 0.5s ease;
+  border-radius: 15px;
 }
