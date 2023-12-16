@@ -13,15 +13,16 @@ type FieldType = {
     password?: string;
 };
 
-export function LoginPage(){
+const LoginPage:React.FC=()=>{
     const navigate = useNavigate()
 
     const onFinish = (values: {username:string,password:string}) => {
         Auth.login(values).then(res=>{
             console.log('res',res)
             if(res.msg==='登录成功'){
+                sessionStorage.setItem('userName',values.username)
                 message.success('登录成功');
-                navigate('/noteMainPage')
+                navigate('/mainPage')
             }else {
                 message.error(res.msg);
             }
@@ -66,3 +67,5 @@ export function LoginPage(){
         </div>
     )
 }
+
+export default LoginPage
