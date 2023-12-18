@@ -1,6 +1,6 @@
 import './index.scss'
 import React from 'react';
-import { Button, Form, Input, message } from 'antd';
+import { Button, Form, Input, message} from 'antd';
 import {useNavigate} from 'react-router-dom'
 import Auth from '../../api/auth'
 

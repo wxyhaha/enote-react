@@ -8,6 +8,7 @@ import LoginPage from './views/LoginPage/index'
 import Layout from './views/Layout/index'
 import NoteDetail from "./views/NoteDetail/index";
 import NoteBookList from "./views/NoteBookList/index";
+import RecycleBin from "./views/RecycleBin/index";
 
 function App() {
     return (
@@ -20,6 +21,7 @@ function App() {
                     <Route path="/mainPage" element={<Layout/>}>
                         <Route index element={<NoteDetail/>}/>
                         <Route path='noteBookList' element={<NoteBookList/>}/>
+                        <Route path='recycleBin' element={<RecycleBin/>}/>
                     </Route>
                 </Routes>
             </Router>
