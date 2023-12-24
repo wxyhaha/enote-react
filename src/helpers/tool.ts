@@ -20,3 +20,4 @@ export function friendlyData(datsStr){
     }
     return str
 }
+
