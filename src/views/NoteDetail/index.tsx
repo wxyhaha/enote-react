@@ -1,9 +1,11 @@
 import './index.scss'
-import React, {useState, useEffect} from "react";
-import {Select, Button, Empty, Input} from 'antd';
+import React, {useState, useEffect, useRef} from "react";
+import {Select, Button, Empty, Input,Popconfirm, message} from 'antd';
 import {PlusOutlined} from '@ant-design/icons';
 import noteBook from "../../api/noteBook";
 import note from "../../api/note";
+import MarkdownIt from 'markdown-it'
+import {useSyncCallback} from "../../helpers/tool";
 
 type selectedNoteObj = {
     id: number,
@@ -20,6 +22,7 @@ type selectedNoteObj = {
 
 const {TextArea} = Input;
 let timer = null
+const md = new MarkdownIt();
 
 const NoteDetail: React.FC = () => {
     const [noteBookList, setNoteBookList] = useState([])
@@ -39,6 +42,8 @@ const NoteDetail: React.FC = () => {
     })
     const [statusText, setStatusText] = useState('笔记未改动')
     const [selectedNoteBookId, setSelectedNoteBookId] = useState('')
+    const isNoteUpdate=useRef(false)
+    const [isShowPreview,setIsShowPreview]=useState(false)
 
     const handleChangeNoteBook = (value: string) => {
         setSelectedNoteBookId(value)
@@ -50,6 +55,7 @@ const NoteDetail: React.FC = () => {
 
     const handleSelectNote = (noteObj: selectedNoteObj) => {
         setSelectedNoteObj(noteObj)
+        setIsShowPreview(false)
     }
     useEffect(() => {
         noteBook.getAll().then((res) => {
@@ -64,6 +70,7 @@ const NoteDetail: React.FC = () => {
     }, []);
 
     useEffect(()=>{
+        if(!isNoteUpdate.current) return
         upDateQuery()
     },[selectedNoteObj])
     
@@ -71,7 +78,21 @@ const NoteDetail: React.FC = () => {
         setStatusText('输入中...')
         const { name, value } = e.target;
         setSelectedNoteObj((preValue) => ({ ...preValue, [name]: value }));
+        isNoteUpdate.current=true
     }
+
+    const switchMD=()=>{
+        setIsShowPreview((oldValue)=>!oldValue)
+        renderMDContent()
+    }
+
+    const renderMDContent=useSyncCallback(() => {
+        if(!isShowPreview) return
+        const mdContentDom=document.getElementById('mdTextContent')
+            if(mdContentDom){
+                mdContentDom.innerHTML=md.render(selectedNoteObj.content || '')
+            }
+    });
 
     const upDateQuery = () => {
         if (timer) {
@@ -83,11 +104,26 @@ const NoteDetail: React.FC = () => {
                     setStatusText('已保存')
                     note.getAll({notebookId: selectedNoteBookId}).then((res) => {
                         setNoteList(res.data)
+                        isNoteUpdate.current=false
                     })
                 }).catch(() => {
                 setStatusText('出现错误')
             })
         }, 300)
+    }
+
+    const handleDeleteNote=()=>{
+        note.deleteNote({noteId:selectedNoteObj.id}).then((res)=>{
+            message.success(res.msg)
+            handleChangeNoteBook(selectedNoteBookId)
+        })
+    }
+
+    const handleAddNote=()=>{
+        note.addNote({notebookId:selectedNoteBookId},{title:'新建笔记'}).then((res)=>{
+            message.success(res.msg)
+            handleChangeNoteBook(selectedNoteBookId)
+        })
     }
 
     return (
@@ -96,7 +132,7 @@ const NoteDetail: React.FC = () => {
                 <div className="headerWrapper">
                     <Select placeholder={defaultSelect} style={{width: 100}} onChange={handleChangeNoteBook} options={noteBookList}/>
                     <Button className='addNoteButton' type="primary" icon={<PlusOutlined/>} size='small' shape="circle"
-                            title='添加笔记'/>
+                            title='添加笔记' onClick={handleAddNote}/>
                 </div>
                 <div className="noteListWrapper">
                     <div className="noteListHead">
@@ -124,8 +160,10 @@ const NoteDetail: React.FC = () => {
                         <div>{statusText}</div>
                     </div>
                     <div className="noteButton">
-                        <i className="iconfont icon-MD"/>
-                        <i className="iconfont icon-delete"/>
+                        <i className="iconfont icon-MD" style={{color:isShowPreview ? '#0872fa' : '#999999'}} onClick={switchMD}/>
+                        <Popconfirm title="删除笔记" description="确认删除此条笔记吗？" okText="确认" cancelText="取消" onConfirm={handleDeleteNote}>
+                            <i className="iconfont icon-delete"/>
+                        </Popconfirm>
                     </div>
                 </div>
                 <div className="noteDetailContent">
@@ -134,8 +172,10 @@ const NoteDetail: React.FC = () => {
                                onChange={handleChangeNote}/>
                     </div>
                     <div className="noteMainContent">
-                        <TextArea value={selectedNoteObj.content} name='content' onChange={handleChangeNote} autoSize={true}
-                                  placeholder="输入内容，支持Markdown语法" bordered={false}/>
+                        {!isShowPreview ?
+                            <TextArea value={selectedNoteObj.content} name='content' onChange={handleChangeNote} autoSize={true} placeholder="输入内容，支持Markdown语法" bordered={false}/>
+                            : <div id='mdTextContent'></div>
+                        }
                     </div>
                 </div>
             </div>

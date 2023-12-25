@@ -1,3 +1,5 @@
+import { useEffect, useState, useCallback } from 'react'
+
 export function friendlyData(datsStr){
     const dateObj=typeof datsStr==='object' ? datsStr : new Date(datsStr)
     const time=dateObj.getTime()
@@ -20,4 +22,22 @@ export function friendlyData(datsStr){
     }
     return str
 }
+
+export const useSyncCallback = callback => {
+    const [proxyState, setProxyState] = useState({ current: false })
+
+    const Func = useCallback(() => {
+        setProxyState({ current: true })
+    }, [proxyState])
+
+    useEffect(() => {
+        if (proxyState.current) setProxyState({ current: false })
+    }, [proxyState])
+
+    useEffect(() => {
+        proxyState.current && callback()
+    })
+    return Func
+}
+
 
