@@ -38,8 +38,6 @@ const NoteDetail: React.FC = () => {
         userId: 0
     })
     const [statusText, setStatusText] = useState('笔记未改动')
-    const [noteTitle, setNoteTitle] = useState('')
-    const [noteContent, setNoteContent] = useState('')
     const [selectedNoteBookId, setSelectedNoteBookId] = useState('')
 
     const handleChangeNoteBook = (value: string) => {
@@ -52,8 +50,6 @@ const NoteDetail: React.FC = () => {
 
     const handleSelectNote = (noteObj: selectedNoteObj) => {
         setSelectedNoteObj(noteObj)
-        setNoteTitle(noteObj.title)
-        setNoteContent(noteObj.content)
     }
     useEffect(() => {
         noteBook.getAll().then((res) => {
@@ -69,25 +65,20 @@ const NoteDetail: React.FC = () => {
 
     useEffect(()=>{
         upDateQuery()
-    },[noteTitle,noteContent])
+    },[selectedNoteObj])
     
-    const handleChangeTitle = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleChangeNote = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setStatusText('输入中...')
-        setNoteTitle(e.target.value)
-    }
-
-    const handleChangeContent = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        setStatusText('输入中...')
-        setNoteContent(e.target.value)
+        const { name, value } = e.target;
+        setSelectedNoteObj((preValue) => ({ ...preValue, [name]: value }));
     }
 
     const upDateQuery = () => {
-        if(noteTitle===selectedNoteObj.title && noteContent===selectedNoteObj.content) return
         if (timer) {
             window.clearTimeout(timer)
         }
         timer = setTimeout(() => {
-            note.updateNote({noteId: selectedNoteObj.id}, {title: noteTitle, content: noteContent})
+            note.updateNote({noteId: selectedNoteObj.id}, {title: selectedNoteObj.title, content: selectedNoteObj.content})
                 .then(() => {
                     setStatusText('已保存')
                     note.getAll({notebookId: selectedNoteBookId}).then((res) => {
@@ -103,12 +94,7 @@ const NoteDetail: React.FC = () => {
         <div className='NoteDetailWrapper'>
             <div className="noteSideBar">
                 <div className="headerWrapper">
-                    <Select
-                        placeholder={defaultSelect}
-                        style={{width: 100}}
-                        onChange={handleChangeNoteBook}
-                        options={noteBookList}
-                    />
+                    <Select placeholder={defaultSelect} style={{width: 100}} onChange={handleChangeNoteBook} options={noteBookList}/>
                     <Button className='addNoteButton' type="primary" icon={<PlusOutlined/>} size='small' shape="circle"
                             title='添加笔记'/>
                 </div>
@@ -144,11 +130,11 @@ const NoteDetail: React.FC = () => {
                 </div>
                 <div className="noteDetailContent">
                     <div className="noteTitle">
-                        <Input value={noteTitle} placeholder="输入标题" bordered={false} size="large"
-                               onChange={handleChangeTitle}/>
+                        <Input value={selectedNoteObj.title} name='title' placeholder="输入标题" bordered={false} size="large"
+                               onChange={handleChangeNote}/>
                     </div>
                     <div className="noteMainContent">
-                        <TextArea value={noteContent} onChange={handleChangeContent} autoSize={true}
+                        <TextArea value={selectedNoteObj.content} name='content' onChange={handleChangeNote} autoSize={true}
                                   placeholder="输入内容，支持Markdown语法" bordered={false}/>
                     </div>
                 </div>
