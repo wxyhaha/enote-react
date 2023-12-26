@@ -6,6 +6,7 @@ import noteBook from "../../api/noteBook";
 import note from "../../api/note";
 import MarkdownIt from 'markdown-it'
 import {useSyncCallback} from "../../helpers/tool";
+import {useLocation} from "react-router-dom";
 
 type selectedNoteObj = {
     id: number,
@@ -24,32 +25,40 @@ const {TextArea} = Input;
 let timer = null
 const md = new MarkdownIt();
 
+const initialSelectedNoteObj={
+    content: "",
+    createdAt: "",
+    createdAtFriendly: "",
+    id: 0,
+    isDelete: false,
+    notebookId: 0,
+    title: "",
+    updatedAt: "",
+    updatedAtFriendly: "",
+    userId: 0
+}
+
 const NoteDetail: React.FC = () => {
     const [noteBookList, setNoteBookList] = useState([])
     const [defaultSelect, setDefaultSelect] = useState('')
     const [noteList, setNoteList] = useState([])
-    const [selectedNoteObj, setSelectedNoteObj] = useState<selectedNoteObj>({
-        content: "",
-        createdAt: "",
-        createdAtFriendly: "",
-        id: 0,
-        isDelete: false,
-        notebookId: 0,
-        title: "",
-        updatedAt: "",
-        updatedAtFriendly: "",
-        userId: 0
-    })
+    const [selectedNoteObj, setSelectedNoteObj] = useState<selectedNoteObj>(initialSelectedNoteObj)
     const [statusText, setStatusText] = useState('笔记未改动')
     const [selectedNoteBookId, setSelectedNoteBookId] = useState('')
     const isNoteUpdate=useRef(false)
     const [isShowPreview,setIsShowPreview]=useState(false)
 
+    const location=useLocation()
+
     const handleChangeNoteBook = (value: string) => {
         setSelectedNoteBookId(value)
         note.getAll({notebookId: value}).then((res) => {
             setNoteList(res.data)
-            handleSelectNote(res.data[0])
+            if(res.data.length>0){
+                handleSelectNote(res.data[0])
+            }else {
+                setSelectedNoteObj(initialSelectedNoteObj)
+            }
         })
     };
 
@@ -64,8 +73,14 @@ const NoteDetail: React.FC = () => {
                 list.push({value: res.data[i].id, label: res.data[i].title})
             }
             setNoteBookList(list)
-            setDefaultSelect(list[0].label)
-            handleChangeNoteBook(list[0].value)
+            if(location.state!==null){
+                const item=list.find(e=>e.value===location.state.noteBookId)
+                setDefaultSelect(item.label)
+                handleChangeNoteBook(item.value)
+            }else {
+                setDefaultSelect(list[0].label)
+                handleChangeNoteBook(list[0].value)
+            }
         })
     }, []);
 
@@ -129,7 +144,7 @@ const NoteDetail: React.FC = () => {
     return (
         <div className='NoteDetailWrapper'>
             <div className="noteSideBar">
-                <div className="headerWrapper">
+                <div className="noteHeaderWrapper">
                     <Select placeholder={defaultSelect} style={{width: 100}} onChange={handleChangeNoteBook} options={noteBookList}/>
                     <Button className='addNoteButton' type="primary" icon={<PlusOutlined/>} size='small' shape="circle"
                             title='添加笔记' onClick={handleAddNote}/>

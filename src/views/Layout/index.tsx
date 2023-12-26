@@ -3,16 +3,13 @@ import {Outlet, useNavigate} from 'react-router-dom'
 import React, {useState} from "react";
 import {Avatar, message} from 'antd';
 import Auth from "../../api/auth";
+import { useLocation } from 'react-router-dom';
 
 const Layout: React.FC = () => {
     const navigate = useNavigate();
     const [user] = useState(sessionStorage.getItem('userName').slice(0, 1).toUpperCase());
-    const [selectedMenuItem,setSelectedMenuItem]=useState('/mainPage')
 
-    const selectMenItem=(path:string)=>{
-        setSelectedMenuItem(path)
-        navigate(path)
-    }
+    const location = useLocation();
 
     const handleLogout=()=>{
         Auth.logout().then(res=>{
@@ -32,16 +29,16 @@ const Layout: React.FC = () => {
                 <Avatar className='avatarWrapper' size="large">
                     <span className='avatarText'>{user}</span>
                 </Avatar>
-                <div className='menuItem' style={{backgroundColor: selectedMenuItem === '/mainPage' ? '#5e6266' : '#2c333c'}}
-                     title='笔记' onClick={()=>selectMenItem('/mainPage')}>
+                <div className='menuItem' style={{backgroundColor: location.pathname === '/mainPage' ? '#5e6266' : '#2c333c'}}
+                     title='笔记' onClick={()=>navigate('/mainPage')}>
                     <i className="iconfont icon-noteDetail"/>
                 </div>
-                <div className='menuItem' style={{backgroundColor: selectedMenuItem === '/mainPage/noteBookList' ? '#5e6266' : '#2c333c'}}
-                     title='笔记本' onClick={() =>selectMenItem( '/mainPage/noteBookList')}>
+                <div className='menuItem' style={{backgroundColor: location.pathname === '/mainPage/noteBookList' ? '#5e6266' : '#2c333c'}}
+                     title='笔记本' onClick={() =>navigate( '/mainPage/noteBookList')}>
                     <i className="iconfont icon-noteBook"/>
                 </div>
-                <div className='menuItem' style={{backgroundColor: selectedMenuItem === '/mainPage/recycleBin' ? '#5e6266' : '#2c333c'}}
-                     title='回收站' onClick={() => selectMenItem( '/mainPage/recycleBin')}>
+                <div className='menuItem' style={{backgroundColor: location.pathname === '/mainPage/recycleBin' ? '#5e6266' : '#2c333c'}}
+                     title='回收站' onClick={() => navigate( '/mainPage/recycleBin')}>
                     <i className="iconfont icon-recycleBin"/>
                 </div>
                 <div className='menuItem logoutButton' title='退出登录' onClick={handleLogout}>
