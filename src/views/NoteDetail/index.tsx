@@ -154,17 +154,19 @@ const NoteDetail: React.FC = () => {
                         <div>更新时间</div>
                         <div>标题</div>
                     </div>
-                    {noteList.length > 0 ?
-                        noteList.map(c =>
-                            <div key={c.id}
-                                 className={c.id === selectedNoteObj.id ? 'noteItem selectedNoteItem' : 'noteItem'}
-                                 onClick={() => handleSelectNote(c)}>
-                                <div>{c.updatedAtFriendly}</div>
-                                <div>{c.title}</div>
-                            </div>
-                        )
-                        : <Empty style={{marginTop: '20px'}} description='暂无笔记内容'/>
-                    }
+                    <div className='NoteListContent'>
+                        {noteList.length > 0 ?
+                            noteList.map(c =>
+                                <div key={c.id}
+                                     className={c.id === selectedNoteObj.id ? 'noteItem selectedNoteItem' : 'noteItem'}
+                                     onClick={() => handleSelectNote(c)}>
+                                    <div>{c.updatedAtFriendly}</div>
+                                    <div>{c.title}</div>
+                                </div>
+                            )
+                            : <Empty style={{marginTop: '20px'}} description='暂无笔记内容'/>
+                        }
+                    </div>
                 </div>
             </div>
             <div className="noteDetailWrapper">
@@ -189,7 +191,7 @@ const NoteDetail: React.FC = () => {
                     <div className="noteMainContent">
                         {!isShowPreview ?
                             <TextArea value={selectedNoteObj.content} name='content' onChange={handleChangeNote} autoSize={true} placeholder="输入内容，支持Markdown语法" bordered={false}/>
-                            : <div id='mdTextContent'></div>
+                            : <div id='mdTextContent'/>
                         }
                     </div>
                 </div>

@@ -30,13 +30,13 @@
 .noteListWrapper{
   width: 100%;
   height: calc(100% - 50px);
-  overflow:auto;
 }
 .noteListHead{
   width: 100%;
   font-size: 15px;
   display: flex;
   border-bottom: 1px solid #cccccc;
+  height: 24px;
   >div{
     width: 50%;
     line-height: 24px;
@@ -45,6 +45,10 @@
   >div:nth-child(1){
     border-right: 1px solid #cccccc;
   }
+}
+.NoteListContent{
+  height: calc(100% - 25px);
+  overflow: auto;
 }
 .noteItem{
   width: calc(100% - 4px);
