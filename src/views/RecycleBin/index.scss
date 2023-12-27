@@ -1,6 +1,111 @@
-.RecycleBinWrapper{
+.recyclePage-Wrapper{
   width: 100%;
   height: 100%;
   display: flex;
-  background: olivedrab;
+}
+.recyclePage-noteSideBar{
+  width: 300px;
+  height: 100%;
+  background-color: #eeeeee;
+  border-right: 1px solid #cccccc;
+  display: flex;
+  flex-direction: column;
+}
+.recyclePage-noteHeaderWrapper{
+  background-color: #f7f7f7;
+  height: 50px;
+  border-bottom: 1px solid #cccccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+.recyclePage-addNoteButton{
+  position: absolute;
+  right: 15px;
+}
+.recyclePage-noteListWrapper{
+  width: 100%;
+  height: calc(100% - 50px);
+}
+.recyclePage-noteListHead{
+  width: 100%;
+  font-size: 15px;
+  display: flex;
+  border-bottom: 1px solid #cccccc;
+  height: 24px;
+  >div{
+    width: 50%;
+    line-height: 24px;
+    padding-left: 10px;
+  }
+  >div:nth-child(1){
+    border-right: 1px solid #cccccc;
+  }
+}
+.recyclePage-NoteListContent{
+  height: calc(100% - 25px);
+  overflow: auto;
+}
+.recyclePage-noteItem{
+  width: calc(100% - 4px);
+  font-size: 13px;
+  display: flex;
+  color: #444;
+  border: 2px solid transparent;
+  cursor: pointer;
+  >div{
+    width: 50%;
+    line-height: 24px;
+    padding-left: 10px;
+  }
+  &:nth-of-type(even){
+    background-color: #f2f2f2;
+  }
+  &:nth-of-type(odd){
+    background-color: #eeeeee;
+  }
+}
+
+.recyclePage-selectedNoteItem{
+  border: 2px solid #81c0f3;;
+}
+
+.recyclePage-noteDetailWrapper{
+  width: calc(100% - 300px);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.recyclePage-noteDetailHead{
+  height: 32px;
+  width: calc(100% - 40px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  border-bottom: 1px solid #eeeeee;
+  color: #999999;
+  font-size: 14px;
+}
+.recyclePage-noteInfo{
+  display: flex;
+  >div{
+    margin-right: 20px;
+  }
+}
+
+.recyclePage-noteDetailContent{
+  width: calc(100% - 20px);
+  height: calc(100% - 52px);
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+.recyclePage-noteTitle{
+  height: 52px;
+}
+.recyclePage-noteMainContent{
+  height: calc(100% - 52px);
+  overflow: auto;
 }

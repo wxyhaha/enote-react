@@ -107,10 +107,11 @@
   }
 }
 .noteDetailContent{
-  width: 100%;
-  height: calc(100% - 32px);
+  width: calc(100% - 20px);
+  height: calc(100% - 52px);
   display: flex;
   flex-direction: column;
+  padding: 10px;
 }
 .noteTitle{
   height: 52px;
